@@ -1,0 +1,129 @@
+{
+  "generated_by_isoloom": "from isoloom.yml; don't edit: change the spec and run `isoloom generate` (`isoloom check` fails when this file is out of date)",
+  "resolved_version": 1,
+  "name": "vulhub-redis-4-unacc",
+  "instance": null,
+  "inputs": [],
+  "networks": {
+    "lab": {
+      "cidr": "10.60.50.0/24",
+      "docker_cidr": "10.60.50.0/24",
+      "internet": true,
+      "gateway": null,
+      "gateway_address": "10.60.50.1",
+      "router": null,
+      "controller": "10.60.50.253"
+    }
+  },
+  "reach": [],
+  "machines": {
+    "redis": {
+      "access": false,
+      "supplied": false,
+      "shapes": [
+        "docker"
+      ],
+      "arch": "amd64",
+      "os": null,
+      "windows": false,
+      "addresses": {
+        "lab": "10.60.50.10"
+      },
+      "docker_addresses": {
+        "lab": "10.60.50.10"
+      },
+      "services": [
+        {
+          "port": 6379,
+          "name": "redis",
+          "http": false,
+          "publish": 6379
+        }
+      ],
+      "depends_on": [],
+      "inputs": [],
+      "volumes": {},
+      "resources": {
+        "cpus": 1,
+        "memory_mb": 256,
+        "disk_gb": 20
+      },
+      "gateway_of": [],
+      "routes": [],
+      "default_gateway": null,
+      "offline": false
+    }
+  },
+  "start_order": [
+    "redis"
+  ],
+  "clones": {},
+  "tools": {},
+  "groups": {},
+  "router": null,
+  "controller": {
+    "addresses": {
+      "lab": "10.60.50.253"
+    }
+  },
+  "published": [
+    {
+      "machine": "redis",
+      "port": 6379,
+      "host_port": 6379
+    }
+  ],
+  "targets": {
+    "possible": [
+      "docker",
+      "hosted",
+      "docker-vm",
+      "cloud-docker",
+      "kubernetes"
+    ],
+    "generated": [
+      "docker",
+      "hosted",
+      "docker-vm",
+      "cloud-docker",
+      "kubernetes"
+    ],
+    "refused": {},
+    "not_possible": {
+      "hybrid": "only when some machines are containers and others are VMs",
+      "vagrant": "needs `vm:` on redis",
+      "proxmox": "needs `vm:` on redis",
+      "cloud-vm": "needs `vm:` on redis",
+      "external": "needs `external:` on redis"
+    }
+  },
+  "checks": {
+    "default_position": "networks",
+    "positions": [
+      {
+        "position": "networks",
+        "machine": null,
+        "runner": "isoloom-check",
+        "checks": [
+          {
+            "name": "Redis answers",
+            "derived": false,
+            "kind": "tcp",
+            "target": "redis:6379",
+            "expect": "open",
+            "wait": 60
+          },
+          {
+            "name": "Redis 4.0.14 answers INFO without a password",
+            "derived": false,
+            "kind": "script",
+            "target": "checks/info.sh",
+            "expect": "",
+            "wait": 0
+          }
+        ]
+      }
+    ]
+  },
+  "message": "Redis 4.0.14 listens on 127.0.0.1:6379, with no password.\nA replica copies whatever its master sends, and Redis 4 loads modules.\n"
+}

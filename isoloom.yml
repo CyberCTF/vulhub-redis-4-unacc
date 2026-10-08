@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://www.isoloom.com/schema/v1.json
+# Redis 4.x Unauthenticated RCE via Master-Slave Replication (Vulhub, by phith0n and the Vulhub contributors) as an Isoloom spec:
+# Vulhub's redis/4-unacc, vendored in app/, run from the published image vulhub/redis:4.0.14.
+# `isoloom generate`, then `isoloom run docker`.
+version: 1
+name: vulhub-redis-4-unacc
+
+networks:
+  lab: { cidr: 10.60.50.0/24, internet: true }  # the exploit makes Redis replicate from the player's rogue master
+
+machines:
+  redis:
+    networks: { lab: 10 }
+    services: [{ port: 6379, name: redis, publish: 6379 }]
+    resources: { cpus: 1, memory_mb: 256 }
+    docker:
+      image: vulhub/redis:4.0.14
+
+checks:
+  - name: Redis answers
+    tcp: redis:6379
+    wait: 60
+  - name: Redis 4.0.14 answers INFO without a password
+    script: checks/info.sh
+
+message: |
+  Redis 4.0.14 listens on 127.0.0.1:{{ machines.redis.services.0.publish }}, with no password.
+  A replica copies whatever its master sends, and Redis 4 loads modules.
