@@ -4,11 +4,5 @@
   "question": "Abuse the unauthenticated Redis 4.0.14 to run a command on the server.",
   "category": "NETWORK",
   "difficulty": 3,
-  "evidence_kind": "SECRET",
-  "capabilities": [
-    "unauthenticated-access",
-    "redis",
-    "rogue-master-replication",
-    "remote-code-execution"
-  ]
+  "evidence_kind": "SECRET"
 }
