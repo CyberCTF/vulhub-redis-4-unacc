@@ -1,7 +1,7 @@
 {
   "title": "Redis 4.x Unauthenticated RCE via Master-Slave Replication",
   "description": "Redis 4.0.14 listening without authentication: anyone can make it a replica of a rogue master, which sends a malicious module as the replication payload, then load that module to run commands.",
-  "question": "Abuse the unauthenticated Redis 4.0.14 to run a command on the server.",
+  "question": "Abuse the unauthenticated Redis 4.0.14 to run a command on the server and read /ctf/flag.",
   "category": "NETWORK",
   "difficulty": 3,
   "evidence_kind": "SECRET"

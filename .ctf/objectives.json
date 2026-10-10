@@ -1,0 +1,51 @@
+{
+  "objectives": [
+    {
+      "key": "main",
+      "title": "Read the flag",
+      "prompt": "Turn the unauthenticated Redis into code execution and read /ctf/flag.",
+      "check": {
+        "evidence": "SECRET",
+        "format": "FLAG{%s}"
+      },
+      "dev": "FLAG{dev-vulhub-redis-4-unacc}",
+      "hints": [
+        "Redis has no password and runs as a Redis 4: it can load modules and replicate from any master you name.",
+        "A replica writes whatever the master sends as its RDB file, including a shared object. The flag is at /ctf/flag."
+      ],
+      "steps": [
+        {
+          "key": "version",
+          "title": "Identify the server",
+          "prompt": "Which Redis version answers INFO? (version)",
+          "check": {
+            "answer_regex": "4\\.0\\.14"
+          }
+        },
+        {
+          "key": "auth",
+          "title": "Check authentication",
+          "prompt": "Does the server require a password to run commands? (yes or no)",
+          "check": {
+            "answer": [
+              "no"
+            ]
+          }
+        },
+        {
+          "key": "class",
+          "title": "Name the weakness",
+          "prompt": "Which weakness class makes this Redis exploitable at all? (two words)",
+          "check": {
+            "answer": [
+              "unauthorized access",
+              "unauthenticated access",
+              "missing authentication",
+              "no authentication"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -5,6 +5,9 @@
 version: 1
 name: vulhub-redis-4-unacc
 
+# Given by the CyberCTF launcher: this player's flag. Without it the development flag.
+inputs: [CTF_FLAG_MAIN]
+
 networks:
   lab: { cidr: 10.60.50.0/24, internet: true }  # the exploit makes Redis replicate from the player's rogue master
 
@@ -13,8 +16,11 @@ machines:
     networks: { lab: 10 }
     services: [{ port: 6379, name: redis, publish: 6379 }]
     resources: { cpus: 1, memory_mb: 256 }
+    inputs: [CTF_FLAG_MAIN]
+    volumes: { ctf: /ctf }   # the flag, written by ctf/flag.sh at every start
     docker:
       image: vulhub/redis:4.0.14
+      init: [ctf/flag.sh]
 
 checks:
   - name: Redis answers
