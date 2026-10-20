@@ -6,21 +6,28 @@ version: 1
 name: vulhub-redis-4-unacc
 
 # Given by the CyberCTF launcher: this player's flag. Without it the development flag.
-inputs: [CTF_FLAG_MAIN]
+inputs:
+  CTF_FLAG_MAIN: {}
 
 networks:
-  lab: { cidr: 10.60.50.0/24, internet: true }  # the exploit makes Redis replicate from the player's rogue master
+  lab: {cidr: 10.60.50.0/24, internet: true}    # the exploit makes Redis replicate from the player's rogue master
 
 machines:
   redis:
-    networks: { lab: 10 }
-    services: [{ port: 6379, name: redis, publish: 6379 }]
-    resources: { cpus: 1, memory_mb: 256 }
-    inputs: [CTF_FLAG_MAIN]
-    volumes: { ctf: /ctf }   # the flag, written by ctf/flag.sh at every start
-    docker:
+    networks: {lab: 10}
+    resources: {cpus: 1, memory_mb: 256}
+    volumes: {ctf: /ctf}     # the flag, written by ctf/flag.sh at every start
+    ports:
+      redis:
+        port: 6379
+        publish: true
+    files:
+      - path: /run/lab/ctf_flag_main
+        input: CTF_FLAG_MAIN
+    setup:
+      - ctf/flag.sh
+    app:
       image: vulhub/redis:4.0.14
-      init: [ctf/flag.sh]
 
 checks:
   - name: Redis answers
@@ -30,5 +37,5 @@ checks:
     script: checks/info.sh
 
 message: |
-  Redis 4.0.14 listens on 127.0.0.1:{{ machines.redis.services.0.publish }}, with no password.
+  Redis 4.0.14 listens on 127.0.0.1:{{ machines.redis.ports.redis.published }}, with no password.
   A replica copies whatever its master sends, and Redis 4 loads modules.
